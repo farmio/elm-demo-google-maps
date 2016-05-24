@@ -3,7 +3,7 @@ import Html.Events exposing (onClick)
 import Html.App
 
 import SharedModels exposing (GMPos)
-import GMaps exposing (moveMap)
+import GMaps exposing (moveMap, mapMoved)
 
 
 -- MAIN
@@ -30,6 +30,7 @@ type Msg
   | South
   | West
   | East
+  | MapMoved GMPos
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -62,6 +63,10 @@ update msg model =
         ( { model | pos = newPos }
         , moveMap newPos
         )
+    MapMoved newPos ->
+      ( { model | pos = newPos }
+      , Cmd.none
+      )
 
 
 -- VIEW
@@ -82,7 +87,7 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.none
+  mapMoved MapMoved
 
 
 -- INIT

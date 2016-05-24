@@ -35,6 +35,13 @@
           center: myLatlng
         };
         var gmap = new google.maps.Map(mapDiv, mapOptions);
+        gmap.addListener('drag', function() {
+          var newPos = {
+            lat: gmap.getCenter().lat(),
+            lng: gmap.getCenter().lng()
+          };
+          map.ports.mapMoved.send(newPos);
+        });
     </script>
   </body>
 </html>
