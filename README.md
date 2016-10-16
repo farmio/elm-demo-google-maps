@@ -2,4 +2,4 @@
 
 This is a quick rewrite of https://github.com/simonh1000/elm-google-maps using Elm 0.17
 
-To try it just clone and `elm make src/Main.elm --output=main.js`
+To try it just clone and `elm-make src/Main.elm --output=main.js`
