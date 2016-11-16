@@ -33,47 +33,17 @@ type alias Model =
 
 
 type Msg
-    = North
-    | South
-    | West
-    | East
+    = Move Direction
     | MapMoved GMPos
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        North ->
+        Move direction ->
             let
                 newPos =
-                    GMPos (model.pos.lat + 1) model.pos.lng
-            in
-                ( { model | pos = newPos }
-                , moveMap newPos
-                )
-
-        South ->
-            let
-                newPos =
-                    GMPos (model.pos.lat - 1) model.pos.lng
-            in
-                ( { model | pos = newPos }
-                , moveMap newPos
-                )
-
-        West ->
-            let
-                newPos =
-                    GMPos model.pos.lat (model.pos.lng - 1)
-            in
-                ( { model | pos = newPos }
-                , moveMap newPos
-                )
-
-        East ->
-            let
-                newPos =
-                    GMPos model.pos.lat (model.pos.lng + 1)
+                    movePos model.pos direction
             in
                 ( { model | pos = newPos }
                 , moveMap newPos
@@ -85,6 +55,29 @@ update msg model =
             )
 
 
+type Direction
+    = North
+    | South
+    | West
+    | East
+
+
+movePos : GMPos -> Direction -> GMPos
+movePos pos direction =
+    case direction of
+        North ->
+            { pos | lat = pos.lat + 1 }
+
+        South ->
+            { pos | lat = pos.lat - 1 }
+
+        West ->
+            { pos | lng = pos.lng - 1 }
+
+        East ->
+            { pos | lng = pos.lng + 1 }
+
+
 
 -- VIEW
 
@@ -94,10 +87,10 @@ view model =
     div []
         [ p [] [ text ("Latitude: " ++ toString model.pos.lat) ]
         , p [] [ text ("Longitude: " ++ toString model.pos.lng) ]
-        , button [ onClick North ] [ text "North" ]
-        , button [ onClick South ] [ text "South" ]
-        , button [ onClick West ] [ text "West" ]
-        , button [ onClick East ] [ text "East" ]
+        , button [ onClick (Move North) ] [ text "North" ]
+        , button [ onClick (Move South) ] [ text "South" ]
+        , button [ onClick (Move West) ] [ text "West" ]
+        , button [ onClick (Move East) ] [ text "East" ]
         ]
 
 
