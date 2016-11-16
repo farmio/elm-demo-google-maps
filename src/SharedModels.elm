@@ -1,6 +1,7 @@
 module SharedModels exposing (..)
 
+
 type alias GMPos =
-  { lat : Float
-  , lng : Float
-  }
+    { lat : Float
+    , lng : Float
+    }
