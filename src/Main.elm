@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Browser
 import Html exposing (Html, div, p, text, button)
 import Html.Events exposing (onClick)
 import SharedModels exposing (GMPos)
@@ -9,13 +10,12 @@ import GMaps exposing (moveMap, mapMoved)
 -- MAIN
 
 
-main : Program Never Model Msg
 main =
-    Html.program
+    Browser.element
         { init = init
-        , view = view
         , update = update
         , subscriptions = subscriptions
+        , view = view
         }
 
 
@@ -85,8 +85,8 @@ movePos pos direction =
 view : Model -> Html Msg
 view model =
     div []
-        [ p [] [ text ("Latitude: " ++ toString model.pos.lat) ]
-        , p [] [ text ("Longitude: " ++ toString model.pos.lng) ]
+        [ p [] [ text ("Latitude: " ++ String.fromFloat model.pos.lat) ]
+        , p [] [ text ("Longitude: " ++ String.fromFloat model.pos.lng) ]
         , button [ onClick (Move North) ] [ text "North" ]
         , button [ onClick (Move South) ] [ text "South" ]
         , button [ onClick (Move West) ] [ text "West" ]
@@ -107,8 +107,8 @@ subscriptions model =
 -- INIT
 
 
-init : ( Model, Cmd Msg )
-init =
+init : () -> ( Model, Cmd Msg )
+init _ =
     let
         vienna =
             (GMPos 48.2206636 16.3100206)

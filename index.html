@@ -1,47 +1,55 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Main</title>
-    <style media="screen">
-        #map {
-            width: 300px;
-            height: 300px;
-            background-color: grey;
-        }
-    </style>
-  </head>
 
-  <body>
-    <h3>Elm-Land</h3>
-    <div id="elm"></div>
-    <h3>JavaScript-Land</h3>
-    <div id="map"></div>
+<head>
+  <meta charset="UTF-8">
+  <title>Main</title>
+  <style media="screen">
+    #map {
+      width: 300px;
+      height: 300px;
+      background-color: grey;
+    }
+  </style>
+</head>
 
-    <script src="main.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
-    <script type="text/javascript">
-        var div = document.getElementById('elm');
-        var mapDiv = document.getElementById('map');
-        var map = Elm.Main.embed(div);
-        map.ports.moveMap.subscribe(function(gmPos) {
-            console.log("received", gmPos);
-            var myLatlng = new google.maps.LatLng(gmPos);
-            gmap.setCenter(myLatlng);
-        });
-        var myLatlng = new google.maps.LatLng(0, 0);
-        var mapOptions = {
-          zoom: 6,
-          center: myLatlng
-        };
-        var gmap = new google.maps.Map(mapDiv, mapOptions);
-        gmap.addListener('drag', function() {
-          var newPos = {
-            lat: gmap.getCenter().lat(),
-            lng: gmap.getCenter().lng()
-          };
-          map.ports.mapMoved.send(newPos);
-        });
-    </script>
-  </body>
+<body>
+  <h3>Elm-Land</h3>
+  <div id="elm"></div>
+  <h3>JavaScript-Land</h3>
+  <div id="map"></div>
+
+  <script src="main.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js"></script>
+  <script type="text/javascript">
+    // initialize google map
+    var mapDiv = document.getElementById('map');
+    var myLatlng = new google.maps.LatLng(0, 0);
+    var mapOptions = {
+      zoom: 6,
+      center: myLatlng
+    };
+    var gmap = new google.maps.Map(mapDiv, mapOptions);
+
+    // initialize elm app
+    var app = Elm.Main.init({ node: document.getElementById('elm') });
+
+    // outgoing Port: User clicks a button | elm -> js
+    app.ports.moveMap.subscribe(function (gmPos) {
+      console.log("received", gmPos);
+      var myLatlng = new google.maps.LatLng(gmPos);
+      gmap.setCenter(myLatlng);
+    });
+
+    // incoming Port: User drags the map | js -> elm
+    gmap.addListener('drag', function () {
+      var newPos = {
+        lat: gmap.getCenter().lat(),
+        lng: gmap.getCenter().lng()
+      };
+      app.ports.mapMoved.send(newPos);
+    });
+  </script>
+</body>
+
 </html>
